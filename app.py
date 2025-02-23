@@ -41,7 +41,7 @@ def get_image(url: str):
             proxy.ssl_proxy = os.environ.get("PROXY_SERVER")
             chrome_options.proxy = proxy
         if os.environ.get("USER_AGENT", "") != "":
-            chrome_options.add_argument("--user-agent='" + os.environ.get("USER_AGENT") + "'")
+            chrome_options.add_argument("--user-agent=" + os.environ.get("USER_AGENT"))
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("window-size=" + os.environ.get("WINDOW_SIZE", "1920,1080"))
         driver = webdriver.Remote(command_executor=os.environ.get("WEBDRIVER_URL", "http://webdriver:4444/wd/hub"),
