@@ -1,0 +1,20 @@
+services:
+  webdriver:
+    platform: linux/amd64
+    restart: unless-stopped
+    shm_size: "2g"
+    image: selenium/standalone-chrome:latest
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:4444/ui || exit 1" ]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+      timeout: 5s
+  webscreenshot:
+    build: .
+    container_name: webscreenshot
+    ports:
+      - 8080:80
+    depends_on:
+      webdriver:
+        condition: service_healthy
