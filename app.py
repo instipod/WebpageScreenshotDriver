@@ -33,8 +33,10 @@ def ping_page():
 def get_image(url: str):
     try:
         chrome_options = Options()
+        if os.environ.get("PROXY_SERVER", "") != "":
+            chrome_options.add_argument("--proxy-server=" + os.environ.get("PROXY_SERVER"))
         chrome_options.add_argument("--headless")
-        chrome_options.add_argument("window-size=1920,1080")
+        chrome_options.add_argument("window-size=" + os.environ.get("WINDOW_SIZE", "1920,1080"))
         driver = webdriver.Remote(command_executor=os.environ.get("WEBDRIVER_URL", "http://webdriver:4444/wd/hub"),
                                   options=chrome_options)
     except Exception as ex:
