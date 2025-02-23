@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.proxy import ProxyType, Proxy
 from starlette.responses import Response
 
 
@@ -34,7 +35,13 @@ def get_image(url: str):
     try:
         chrome_options = Options()
         if os.environ.get("PROXY_SERVER", "") != "":
-            chrome_options.add_argument("--proxy-server=" + os.environ.get("PROXY_SERVER"))
+            proxy = Proxy()
+            proxy.proxy_type = ProxyType.MANUAL
+            proxy.http_proxy = os.environ.get("PROXY_SERVER")
+            proxy.ssl_proxy = os.environ.get("PROXY_SERVER")
+            chrome_options.proxy = proxy
+        if os.environ.get("USER_AGENT", "") != "":
+            chrome_options.add_argument("--user-agent='" + os.environ.get("USER_AGENT") + "'")
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("window-size=" + os.environ.get("WINDOW_SIZE", "1920,1080"))
         driver = webdriver.Remote(command_executor=os.environ.get("WEBDRIVER_URL", "http://webdriver:4444/wd/hub"),
